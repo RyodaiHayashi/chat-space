@@ -22,3 +22,42 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+# chat-space DB設計
+## usersテーブル
+|Column|Type|Options|
+|------|----|-------|
+|name|string|null: false,index:true,|
+|mail|string|null: false,index:true|
+### Association
+- has_many :groups, through: :group_users
+- has_many :group_users
+- has_many :massages
+
+## groupsテーブル
+|Column|Type|Options|
+|------|----|-------|
+|name|string|null:flalse,unipue:true|
+### Association
+- has_many :users, through: :group_users
+- has_many :group_users
+- has_many :messages
+
+## messagesテーブル
+|Column|Type|Options|
+|------|----|-------|
+|body|text||
+|image|string||
+|group|references|foreign_key: true|null: false
+|user|references|foreign_key: true|null: false|
+### Association
+- belongs_to :user
+- belongs_to :group
+
+##group_usersテーブル
+|Column|Type|Options|
+|------|----|-------|
+|group|references|index: true, foreign_key: true, null: false|
+|user|references|index: true, foreign_key: true, null: false|
+### Association
+- belongs_to :group
+- belongs_to :user
