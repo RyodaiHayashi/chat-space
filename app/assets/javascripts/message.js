@@ -2,23 +2,24 @@ $(function() {
   
   function buildHTML(message){
     image = ( message.image ) ? `<img class= "lower-message__image" src=${message.image} >` : "";
-  var html =
-  `<div class="main__message__box" data-message-id= "${message.id}">
-          <div class="main__message__box__top">
-            <div class="main__message__box__top__name">
-              ${message.user_name}
-            </div>
-            <div class="main__message__box__top__time">
-              ${message.date}
-            </div>
-          </div>
-          <div class="main__message__box__text">
-            <p class="lower-message__content">
-              ${message.content}
-            </p>
-          </div>
-          ${image}
-        </div>`
+  
+    var html = `<div class="message" data-message-id="${message.id}">
+  <div class="upper-message">
+  <div class="upper-message__user-name">
+    ${message.user_name}
+  </div>
+  <div class="upper-message__date">
+    ${message.date}
+  </div>
+  </div>
+  <div class="lower-message">
+  <p class="lower-message__content">
+    ${message.content}
+  </p>
+  </div>
+   ${image}
+  </div>`
+
     return html;
 }
 
@@ -35,7 +36,9 @@ $.ajax({
   contentType: false
 })
 .done(function(data){
+  console.log(data)
   var html = buildHTML(data);
+  console.log(html)
   $('.messages').append(html);
   $('.messages').animate({scrollTop: $('.messages')[0].scrollHeight}, 'fast');   
   $('form')[0].reset();
@@ -47,11 +50,13 @@ $.ajax({
   });
 
   var reloadMessages = function() {
+    if (window.location.href .match(/\/groups\/\d+\/messages/)){
     //カスタムデータ属性を利用し、ブラウザに表示されている最新メッセージのidを取得
     last_message_id = $('.message:last').data('message-id');
+    group_id = $('.left-header').data('group-id');
     $.ajax({
       //ルーティングで設定した通り/groups/id番号/api/messagesとなるよう文字列を書く
-      url: "/api/messages",
+      url: `/groups/${group_id}/api/messages`,
       //ルーティングで設定した通りhttpメソッドをgetに指定
       type: 'get',
       dataType: 'json',
@@ -65,15 +70,16 @@ $.ajax({
       messages.forEach(function (message) {
       //メッセージが入ったHTMLを取得
       insertHTML = buildHTML(message);
-      //メッセージを追加
-      $('.messages').append(insertHTML);
-    })
-    $('.messages').animate({scrollTop: $('.messages')[0].scrollHeight}, 'fast');
-  })
-    .fail(function() {
-      console.log('error');
-    });
-  };
-  setInterval(reloadMessages, 5000);
-});
-
+       //メッセージを追加
+       $('.messages').append(insertHTML);
+        })
+        $('.messages').animate({scrollTop: $('.messages')[0].scrollHeight}, 'fast');
+      })
+      .fail(function () {
+        console.log('error');
+        });
+      }
+      };
+      setInterval(reloadMessages, 5000);
+      });
+    
