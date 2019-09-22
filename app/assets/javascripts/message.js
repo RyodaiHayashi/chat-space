@@ -36,9 +36,7 @@ $.ajax({
   contentType: false
 })
 .done(function(data){
-  console.log(data)
   var html = buildHTML(data);
-  console.log(html)
   $('.messages').append(html);
   $('.messages').animate({scrollTop: $('.messages')[0].scrollHeight}, 'fast');   
   $('form')[0].reset();
@@ -76,7 +74,7 @@ $.ajax({
         $('.messages').animate({scrollTop: $('.messages')[0].scrollHeight}, 'fast');
       })
       .fail(function () {
-        console.log('error');
+        alert('自動更新に失敗しました');
         });
       }
       };
